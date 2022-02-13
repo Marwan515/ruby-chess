@@ -1,4 +1,28 @@
-class Pieces
+module Pieces
+
+    def pc_arr(x)
+        arr = []
+        if x == "white"
+            arr << white_rook
+            arr << white_knight
+            arr << white_bishop
+            arr << white_queen
+            arr << white_king
+            arr << white_bishop
+            arr << white_knight
+            arr << white_rook
+        else
+            arr << black_rook
+            arr << black_knight
+            arr << black_bishop
+            arr << black_queen
+            arr << black_king
+            arr << black_bishop
+            arr << black_knight
+            arr << black_rook
+        end
+        arr
+    end
 
     def white_king
         "\u2654"
