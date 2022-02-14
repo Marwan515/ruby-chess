@@ -2,7 +2,7 @@ require 'colorize'
 require_relative 'chess_pcs.rb'
 
 module ChessBoard
-
+    include ChessMoves
     include Pieces
 
     def initialize
@@ -67,6 +67,13 @@ module ChessBoard
     def change_place(col, row, pc)
         @grid[col][row] = pc
         @grid[pind[0]][pind[1]] = " "
+    end
+
+    def empty_tile(cols, rows)
+        if @grid[cols][rows] == " "
+            true
+        end
+        false
     end
 
 end
