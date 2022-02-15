@@ -70,7 +70,7 @@ module ChessBoard
     end
 
     def empty_tile(cols, rows)
-        if @grid[cols][rows] == " "
+        if !@grid[cols][rows] == " "
             true
         end
         false
