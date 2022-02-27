@@ -15,9 +15,9 @@ class ChessBoard
         @king_moved = [false, false]
         @pone_capture = []
         @ptwo_capture = []
-        @step = true
-        @white_kings_threat = [black_queen, black_bishop, black_rook, black_knight, black_pawn]
-        @black_kings_threat = [white_queen, white_bishop, white_rook, white_knight, white_pawn]
+        @stop = false
+        @white_kings_threat = [black_queen, black_bishop, black_rook, black_knight]
+        @black_kings_threat = [white_queen, white_bishop, white_rook, white_knight]
         make_brd
     end
     # make the board
@@ -45,13 +45,14 @@ class ChessBoard
         puts ("  A B C D E F G H")
         if @pone_capture.length > 0
             puts "Player One's Captured Pieces: #{@pone_capture}".colorize(:color => :white, :background => :red)
-        elsif @ptwo_capture.length > 0
+        end
+        if @ptwo_capture.length > 0
             puts "Player two's Captured Pieces: #{@ptwo_capture}".colorize(:color => :white, :background => :blue)
         end
         if @splayer == "white"
-            puts "Player ONE".colorize(:color => :white, :background => :red)
+            puts "Player ONE's TURN".colorize(:color => :white, :background => :red)
         elsif @splayer == "black"
-            puts "Player TWO".colorize(:color => :white, :background => :blue)
+            puts "Player TWO's TURN".colorize(:color => :white, :background => :blue)
         end
     end
     # chess piece selection
@@ -130,17 +131,17 @@ class ChessBoard
     end
 
     # check tile if its empty
-    def empty_tile(rows, col)
+    def empty_tile(rows, col, st = @stop)
         op = op_player
-        if @step == false
-            return false
-        elsif @grid[rows].nil?
-            return false
+        if @grid[rows].nil?
+            false
+        elsif st == true
+            false
         elsif @grid[rows][col] == " "
-            return true
+            true
         elsif op.include?(@grid[rows][col])
-            @step = false
-            return true
+            st = true
+            true
         end
     end
 
@@ -206,24 +207,29 @@ class ChessBoard
         moves = []
         if start_pos == true
             if player == "white"
+                @stop = false
                 if empty_tile(rows + 2, col)
                     moves << [rows + 2, col]
-                    if empty_tile(rows + 1, col)
-                        moves << [rows + 1, col]
-                    end
+                end
+                @stop = false
+                if empty_tile(rows + 1, col)
+                    moves << [rows + 1, col]
                 end
             elsif player == "black"
+                @stop = false
                 if empty_tile(rows - 2, col)
                     moves << [rows - 2, col]
-                    if empty_tile(rows - 1, col)
-                        moves << [rows -1, col]
-                    end
+                end
+                @stop = false
+                if empty_tile(rows - 1, col)
+                    moves << [rows -1, col]
                 end
             end
         else
             if player == "white"
                 a = [[rows + 1, col + 1], [rows + 1, col - 1]]
                 a.each do |i|
+                    @stop = false
                     if empty_tile(i[0], i[1])
                         moves << i
                     end
@@ -231,6 +237,7 @@ class ChessBoard
             elsif player == "black"
                 a = [[rows - 1, col - 1], [rows - 1, col + 1]]
                 a.each do |i|
+                    @stop = false
                     if empty_tile(i[0], i[1])
                         moves << i
                     end
@@ -246,21 +253,26 @@ class ChessBoard
         r = col
         b = rows
         l = col
+        @stop = false
         while empty_tile(t + 1, col)
             t += 1
             moves << [t, col]
+            @stop = false
         end
         while empty_tile(rows, r + 1)
             r += 1
             moves << [rows, r]
+            @stop = false
         end
         while empty_tile(b - 1, col)
             b -= 1
             moves << [b, col]
+            @stop = false
         end
         while empty_tile(rows, l - 1)
             l -= 1
             moves << [rows, l]
+            @stop = false
         end
         if player == "black"
             moves.reverse
@@ -274,10 +286,12 @@ class ChessBoard
         moves = []
         tb = rows
         rl = col
+        @stop = false
         while empty_tile(tb + 1, rl + 1)
             tb += 1
             rl += 1
             moves << [tb, rl]
+            @stop = false
         end
         tb = rows
         rl = col
@@ -285,6 +299,7 @@ class ChessBoard
             tb -= 1
             rl += 1
             moves << [tb, rl]
+            @stop = false
         end
         tb = rows
         rl = col
@@ -292,6 +307,7 @@ class ChessBoard
             tb -= 1
             rl -= 1
             moves << [tb, rl]
+            @stop = false
         end
         tb = rows
         rl = col
@@ -299,6 +315,7 @@ class ChessBoard
             tb += 1
             rl -= 1
             moves << [tb, rl]
+            @stop = false
         end
         if player == "black"
             moves.reverse
@@ -311,6 +328,7 @@ class ChessBoard
     def knight_moves(rows, col, player = @splayer)
         moves = []
         @knight_m.each do |i|
+            @stop = false
             if empty_tile(rows + i[0], col + i[1])
                 moves << [rows + i[0], col + i[1]]
             end
@@ -342,22 +360,31 @@ class ChessBoard
         end
         @grid.each_with_index { |i, x| i.include?(k) ? rows = x : next }
         col = @grid[rows].index(k)
+        @stop = false
         if empty_tile(rows + 1, col)
             moves << [rows + 1, col]
+            @stop = false
         elsif empty_tile(rows + 1, col + 1)
             moves [rows + 1, col + 1]
+            @stop = false
         elsif empty_tile(rows, col + 1)
             moves << [rows, col + 1]
+            @stop = false
         elsif empty_tile(rows - 1, col + 1)
             moves << [rows - 1, col + 1]
+            @stop = false
         elsif empty_tile(rows - 1, col)
             moves << [rows - 1, col]
+            @stop = false
         elsif empty_tile(rows - 1, col - 1)
             moves << [rows - 1, col - 1]
+            @stop = false
         elsif empty_tile(rows, col - 1)
             moves << [rows, col - 1]
+            @stop = false
         elsif empty_tile(rows + 1, col - 1)
             moves << [rows + 1, col - 1]
+            @stop = false
         end
         if player == "black"
             moves.reverse
@@ -367,71 +394,24 @@ class ChessBoard
         end
     end
 
-    def checked(player = @splayer)
-        threats = []
-        g = @grid
-        thr = nil
-        kings_row = nil
-        k = nil
-        if player == "white"
-            k = white_king
-            thr = @white_kings_threat
-        else
-            k = black_king
-            thr = @black_kings_threat
-        end
-        @grid.each_with_index { |i, x| i.include?(k) ? kings_row = x : next }
-        kings_col = @grid[kings_row].index(k)
-        diagonal_check = queen_moves(kings_row, kings_col)
-        diagonal_check.each do |x|
-            if thr.include?(g[x[0]][x[1]])
-                threats << [x[0], x[1]]
-            end
-        end
-        threats
-    end
-
     def check_mate(player = @splayer)
-        list_to_check = checked
-        return false if list_to_check.length < 1
-        g = @grid
-        king_row = nil
         k = nil
         if player == "white"
-            k = white_king
-        else
             k = black_king
+        elsif player == "black"
+            k = white_king
         end
-        @grid.each_with_index { |i, x| i.include?(k) ? king_row = x : next }
-        king_col = @grid[king_row].index(k)
-        k_moves = king_moves
-        if k_moves.length < 1
-            return true
-        else
-            k_moves.each do |k|
-                if !check_row_col(k[0], k[1])
-                    false
-                end
+        won = 0
+        @grid.each do |i|
+            if i.include?(k)
+                won = false
             end
+        end
+        if won == false
+            false
+        else
             true
         end
-    end
-
-    def check_row_col(rows, col, player = @splayer)
-        g = @grid
-        thr = nil
-        if player == "white"
-            thr = @white_kings_threat
-        else
-            thr = @black_kings_threat
-        end
-        line_check = queen_moves(rows, col)
-        line_check.each do |n|
-            if thr.include?(g[n[0]][n[1]])
-                true
-            end
-        end
-        false
     end
 
     def pawn_promotion(player = @splayer)
@@ -496,10 +476,8 @@ class ChessBoard
     end
 
     def moved_piece(rowf, colf, rowt, colt)
-        @step = true
         captured(@grid[rowt][colt])
-        @grid[rowt].delete_at(colt)
-        @grid[rowt].insert(colt, @grid[rowf][colf])
+        @grid[rowt][colt] = @grid[rowf][colf]
         @grid[rowf][colf] = " "
     end
 

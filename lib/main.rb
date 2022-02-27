@@ -9,13 +9,16 @@ class Chess_Game
         @game = ChessBoard.new
         @game_end = false
         intro
-        while @game_end == false
+        while @game_end != true
+            if @game.check_mate
+                @game_end = true
+            end
             player_turns
             @game.player_on(@current_player)
             @game.display_board
             @game.select_piece
             @game.move
-            
+            @game_end = @game.check_mate
         end
         puts "Thanks For Playing!"
     end
