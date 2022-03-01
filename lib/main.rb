@@ -3,28 +3,36 @@ require_relative 'board.rb'
 class Chess_Game
 
     def initialize
+        intro
         @playerone = "white"
         @playertwo = "black"
         @current_player = nil
         @game = ChessBoard.new
-        @game_end = false
-        intro
-        while @game_end != true
-            if @game.check_mate
-                @game_end = true
+        @loaded_player = @game.ply
+        @end = @game.en_game
+        while @end != true
+            if !@loaded_player.nil?
+                @current_player = @loaded_player
+                @loaded_player = nil
+            else
+                player_turns
             end
-            player_turns
             @game.player_on(@current_player)
             @game.display_board
             @game.select_piece
+            @end = @game.en_game
+            if @end == true
+                next
+            end
             @game.move
-            @game_end = @game.check_mate
         end
         puts "Thanks For Playing!"
     end
 
-    def player_turns(player = @current_player)
-        if player == nil || player == @playertwo
+    def player_turns(one = nil, player = @current_player)
+        if !one.nil?
+            player = one
+        elsif player == nil || player == @playertwo
             @current_player = @playerone
         else
             @current_player = @playertwo
@@ -33,7 +41,7 @@ class Chess_Game
 
     def intro
         puts "This Project Is From TheOdinProject Curriculum"
-        puts "i'm Not Really Good At Chess So If I Missed Something Let me Know\n I Didn't Add The En-pessant Move yet So Sorry To Disapoint You\n Chess GEEKS! \nSo Lets Begin"
+        puts "i'm Not Really Good At Chess So If I Missed Something Let me Know\nI Didn't Add The En-pessant Move yet So Sorry To Disapoint You\nChess GM's! \nSo Lets Begin The Journey OF Becoming CHESS GRANDMASTER -> \u265a"
         puts "Thanks For Playing!"
         puts "My Github: https://github.com/Marwan515"
     end
