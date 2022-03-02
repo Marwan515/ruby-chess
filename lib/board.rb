@@ -137,7 +137,7 @@ class ChessBoard
     # check tile if its empty
     def empty_tile(rows, col, st = @stop)
         op = op_player
-        if @grid[rows].nil?
+        if @grid[rows].nil? || @grid[rows][col].nil?
             false
         elsif st == true
             false
@@ -470,6 +470,7 @@ class ChessBoard
             k_move.each do |i|
                 puts i
                 pie = @grid[i[0]][i[1]]
+                break if i[0].nil?
                 moved_piece(krow, kcol, i[0], i[1])
                 new_arr = check
                 if new_arr.length > 0
